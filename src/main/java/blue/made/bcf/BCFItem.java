@@ -31,14 +31,14 @@ public abstract class BCFItem {
 	public BCFNumeric asNumericItem() {
 		throw new IllegalStateException("This BCFItem is not a number");
 	}
-	public BCFNumeric asNumericItem(int ifNaN) {
+	public BCFNumeric asNumericItem(Number ifNaN) {
 		return BCF.store(ifNaN);
 	}
 	public Number asNumeric() {
 		throw new IllegalStateException("This BCFItem is not a number");
 	}
-	public Number asNumeric(int ifNaN) {
-		return 0;
+	public Number asNumeric(Number ifNaN) {
+		return ifNaN;
 	}
 
 	// Map
@@ -58,6 +58,9 @@ public abstract class BCFItem {
 	}
 	public String asString() {
 		throw new IllegalStateException("This BCFItem is not a string");
+	}
+	public String asString(String ifNotString) {
+		return ifNotString;
 	}
 
 	// List

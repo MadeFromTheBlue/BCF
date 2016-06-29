@@ -72,6 +72,13 @@ public class BCFMap extends BCFCollection implements Map<String, BCFItem> {
 		return BCFList.copy(this.values());
 	}
 
+	public void append(BCFWriter.Map mw) throws IOException {
+		for (java.util.Map.Entry<String, BCFItem> e : map.entrySet()) {
+			mw.writeName(e.getKey());
+			e.getValue().write(mw);
+		}
+	}
+
 	// ===============
 	// | Map Methods |
 	// ===============

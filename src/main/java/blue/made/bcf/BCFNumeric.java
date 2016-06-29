@@ -23,8 +23,6 @@ public abstract class BCFNumeric extends BCFItem {
 		return BCF.store(n);
 	}
 
-	public abstract Number asNumeric();
-
 	@Override
 	public String toString() {
 		return String.valueOf(this.asNumeric());
@@ -57,9 +55,17 @@ public abstract class BCFNumeric extends BCFItem {
 	public boolean isNumeric() {
 		return true;
 	}
+	public abstract Number asNumeric();
+	public Number asNumeric(Number ifNaN) {
+		return asNumeric();
+	}
 	public BCFNumeric asNumericItem() {
 		return this;
 	}
+	public BCFNumeric asNumericItem(Number ifNaN) {
+		return this;
+	}
+
 
 
 }

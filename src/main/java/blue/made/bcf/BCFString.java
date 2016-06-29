@@ -48,6 +48,9 @@ public class BCFString extends BCFItem {
 	public String asString() {
 		return this.data;
 	}
+	public String asString(String ifNotString) {
+		return this.data;
+	}
 
 	public ByteBuf decodeBase64() {
 		return Unpooled.wrappedBuffer(Base64.getDecoder().decode(this.data));
