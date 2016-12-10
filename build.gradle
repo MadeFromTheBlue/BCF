@@ -5,23 +5,23 @@ version = '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
-repositories 
-{
-	mavenCentral()
-	mavenLocal()
-}
+repositories
+        {
+            mavenCentral()
+            mavenLocal()
+        }
 
 dependencies {
-	compile 'com.google.code.gson:gson:2.8.0'
-	compile 'io.netty:netty-all:5.0.0.Alpha2'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'io.netty:netty-all:5.0.0.Alpha2'
 
-	testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
 }
 
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }
