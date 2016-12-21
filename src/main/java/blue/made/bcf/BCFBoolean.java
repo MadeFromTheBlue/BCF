@@ -28,6 +28,11 @@ public class BCFBoolean extends BCFItem {
     }
 
     @Override
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
     public boolean asBoolean() {
         return data;
     }

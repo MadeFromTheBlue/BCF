@@ -46,6 +46,10 @@ public abstract class BCFItem {
     }
 
     // Boolean
+    public boolean isBoolean() {
+        return false;
+    }
+
     public boolean asBoolean() {
         throw new IllegalStateException("This BCFItem is not a boolean");
     }

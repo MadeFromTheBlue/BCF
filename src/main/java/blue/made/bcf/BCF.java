@@ -35,6 +35,8 @@ public class BCF {
     public static JsonElement toJson(BCFItem bcf) {
         if (bcf.isNumeric())
             return new JsonPrimitive(bcf.asNumeric());
+        if (bcf.isBoolean())
+            return new JsonPrimitive(bcf.asBoolean());
         if (bcf.isString())
             return new JsonPrimitive(bcf.asString());
         if (bcf.isRaw())
@@ -57,8 +59,8 @@ public class BCF {
     }
 
     /**
-     * Converts a Json element to the nearest BCF equivalent. Booleans will be converted to BCFBytes, arrays will be
-     * converted into BCFLists not BCFArrays. All other types have a close approximation.
+     * Converts a Json element to the nearest BCF equivalent. Arrays will be converted into
+     * BCFLists not BCFArrays. All other types have a close approximation.
      *
      * @param json
      * @return
@@ -90,8 +92,8 @@ public class BCF {
         return BCFNull.INSTANCE;
     }
 
-    public static BCFByte store(boolean b) {
-        return new BCFByte(b ? (byte) 1 : (byte) 0);
+    public static BCFBoolean store(boolean b) {
+        return new BCFBoolean(b);
     }
 
     public static BCFByte store(byte b) {
