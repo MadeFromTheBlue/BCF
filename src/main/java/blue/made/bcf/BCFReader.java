@@ -225,6 +225,10 @@ public class BCFReader {
         return readNumber().byteValue();
     }
 
+    public boolean readBoolean() throws IOException {
+        return readNumber().intValue() == 1;
+    }
+
     public short readShort() throws IOException {
         return readNumber().shortValue();
     }

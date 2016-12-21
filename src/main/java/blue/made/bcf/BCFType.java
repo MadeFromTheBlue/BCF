@@ -64,6 +64,11 @@ public enum BCFType {
             return new BCFArray();
         }
     },
+    BOOLEAN(12) {
+        public BCFItem createDefault() {
+            return new BCFBoolean();
+        }
+    },
     END(255) {
         public BCFItem createDefault() {
             throw new UnsupportedOperationException("BCF type end can not be created as an object");
