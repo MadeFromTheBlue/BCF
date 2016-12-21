@@ -129,6 +129,12 @@ public class BCFWriter {
         postWrite();
     }
 
+    public void write(boolean data) throws IOException {
+        preWrite(BCFType.BOOLEAN);
+        out.writeByte(data ? 1 : 0);
+        postWrite();
+    }
+
     public void write(short data) throws IOException {
         preWrite(BCFType.SHORT);
         out.writeShort(data);
