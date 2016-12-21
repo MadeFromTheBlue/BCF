@@ -73,12 +73,14 @@ public class BCF {
             if (p.isString())
                 return store(p.getAsString());
         }
+
         if (json.isJsonArray()) {
             BCFList list = new BCFList();
             JsonArray array = json.getAsJsonArray();
             array.forEach(e -> list.add(fromJson(e)));
             return list;
         }
+
         if (json.isJsonObject()) {
             BCFMap map = new BCFMap();
             JsonObject obj = json.getAsJsonObject();

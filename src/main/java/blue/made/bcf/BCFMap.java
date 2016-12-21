@@ -74,10 +74,14 @@ public class BCFMap extends BCFCollection implements Map<String, BCFItem> {
     }
 
     public void append(BCFWriter.Map mw) throws IOException {
-        for (java.util.Map.Entry<String, BCFItem> e : map.entrySet()) {
+        for (Map.Entry<String, BCFItem> e : map.entrySet()) {
             mw.writeName(e.getKey());
             e.getValue().write(mw);
         }
+    }
+
+    public void addAll(BCFMap m) {
+        m.entrySet().forEach((e) -> map.put(e.getKey(), e.getValue()));
     }
 
     // ===============
