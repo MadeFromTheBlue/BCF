@@ -225,10 +225,6 @@ public class BCFReader {
         return readNumber().byteValue();
     }
 
-    public boolean readBoolean() throws IOException {
-        return readNumber().intValue() == 1;
-    }
-
     public short readShort() throws IOException {
         return readNumber().shortValue();
     }
@@ -247,6 +243,14 @@ public class BCFReader {
 
     public double readDouble() throws IOException {
         return readNumber().doubleValue();
+    }
+
+    public boolean readBoolean() throws IOException {
+        checkReady();
+        if (nextType != BCFType.BOOLEAN) throw new IllegalStateException("BCF type " + nextType + " is not a boolean");
+        boolean b = in.readBoolean();
+        finish();
+        return b;
     }
 
     public String readString() throws IOException {
