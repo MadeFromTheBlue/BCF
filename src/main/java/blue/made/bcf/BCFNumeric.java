@@ -52,9 +52,15 @@ public abstract class BCFNumeric extends BCFItem {
         return this.asNumeric().doubleValue();
     }
 
+    public boolean asBoolean() {
+        return this.asNumeric().intValue() != 0;
+    }
+
     public boolean isNumeric() {
         return true;
     }
+
+    public boolean isBoolean() { return true; }
 
     public abstract Number asNumeric();
 

@@ -6,10 +6,10 @@ import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Binary Container Format
@@ -179,6 +179,13 @@ public class BCF {
         return out;
     }
 
+    public static BCFArray store(boolean... bools) {
+        BCFArray out = new BCFArray();
+        out.typeUnsafe(BCFType.BOOLEAN);
+        for (boolean v : bools) out.addUnsafe(store(v));
+        return out;
+    }
+
     public static BCFArray store(ByteBuf... bufs) {
         BCFArray out = new BCFArray();
         out.typeUnsafe(BCFType.RAW);
@@ -235,6 +242,62 @@ public class BCF {
         BCFMap out = new BCFMap();
         out.putAll(m);
         return out;
+    }
+
+    /**
+     * Accepts and stores values of the types:
+     * <ul>
+     *     <li>{@link BCFItem}</li>
+     *     <li>{@link Number} (byte, short, int, float, etc.)</li>
+     *     <li>{@link Boolean}</li>
+     *     <li>{@link ByteBuf}</li>
+     *     <li>{@link ByteBuffer}</li>
+     *     <li>{@link String}</li>
+     *     <li>{@link Iterable} (where the items can be any of these types)</li>
+     *     <li>{@code Object[]} (where the items can be any of these types)</li>
+     *     <li>{@code byte[]}, {@code short[]}, {@code float[]}, {@code boolean[]}, etc.</li>
+     *     <li>{@link Map} (where the keys are {@link String}s and the values can be any of these types)</li>
+     * </ul>
+     */
+    @SuppressWarnings("unchecked")
+    public static BCFItem storeAny(Object value) {
+        if (value == null) return BCFNull.INSTANCE;
+        if (value instanceof BCFItem) return (BCFItem) value;
+        if (value instanceof Number) return BCF.store((Number) value);
+        if (value instanceof Boolean) return BCF.store((boolean) value);
+        if (value instanceof ByteBuf) return BCF.store((ByteBuf) value);
+        if (value instanceof ByteBuffer) return BCF.store((ByteBuffer) value);
+        if (value instanceof String) return BCF.store((String) value);
+        if (value instanceof Iterable) {
+            Iterable<?> c = (Iterable<?>) value;
+            return BCF.wrap(StreamSupport.stream(c.spliterator(), false).map(BCF::storeAny).collect(Collectors.toList()));
+        }
+        if (value instanceof Object[]) {
+            Object[] a = (Object[]) value;
+            return BCF.wrap(Stream.of(a).map(BCF::storeAny).collect(Collectors.toList()));
+        }
+        if (value instanceof byte[]) return BCF.store((byte[]) value);
+        if (value instanceof short[]) return BCF.store((short[]) value);
+        if (value instanceof int[]) return BCF.store((int[]) value);
+        if (value instanceof long[]) return BCF.store((long[]) value);
+        if (value instanceof float[]) return BCF.store((float[]) value);
+        if (value instanceof double[]) return BCF.store((double[]) value);
+        if (value instanceof boolean[]) return BCF.store((boolean[]) value);
+        if (value instanceof Map) {
+            Map<String, ?> m = (Map<String, ?>) value;
+            BCFMap map = new BCFMap(new HashMap<>(2 * m.size() / 3));
+            m.forEach((k, v) -> map.put(k, storeAny(v)));
+            return map;
+        }
+        throw new IllegalArgumentException(value + " is of a type not accepted by storeAny");
+    }
+
+    public static BCFMap storeMap(Object... keysAndValues) {
+        BCFMap map = new BCFMap(new HashMap<>(2 * keysAndValues.length / 3));
+        for (int i = 0; i < keysAndValues.length; i += 2) {
+            map.put((String) keysAndValues[i], storeAny(keysAndValues[i + 1]));
+        }
+        return map;
     }
 
     // Store
