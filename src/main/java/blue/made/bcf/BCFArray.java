@@ -30,6 +30,9 @@ public class BCFArray extends BCFLinearCollection {
         return out + " ]";
     }
 
+    public BCFItem get(int idx) {
+        return list.get(idx);
+    }
 
     @Override
     public void write(BCFWriter writer) throws IOException {
