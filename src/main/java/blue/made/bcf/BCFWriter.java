@@ -7,6 +7,7 @@ import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.InvalidParameterException;
 
 /**
  * Created by Sam Sartor on 5/11/2016.
@@ -39,14 +40,78 @@ public class BCFWriter {
 
         public void writeName(String name) throws IOException {
             checkState();
-            if (ready) throw new IllegalStateException("There is already a name written for the next item");
+            if (ready)
+                throw new IllegalStateException("There is already a name written for the next item");
             byte[] bytes = name.getBytes(BCFMap.encoding);
-            if (bytes.length > 255) throw new IllegalArgumentException("The name is over 255 bytes");
+            if (bytes.length > 255)
+                throw new IllegalArgumentException("The name is over 255 bytes");
             out.writeByte(bytes.length);
             out.write(bytes);
             ready = true;
         }
 
+        public void addAll(java.util.Map<String, BCFItem> map) throws IOException {
+            for (java.util.Map.Entry<String, BCFItem> e : map.entrySet()) {
+                this.writeName(e.getKey());
+                this.write(e.getValue());
+            }
+        }
+
+        public void put(String key, Object data) throws IOException {
+            if (data != null) {
+                throw new InvalidParameterException(
+                        String.format("BCFWriter does not support type: %s", data.getClass().getName()));
+            }
+
+            writeName(key);
+            writeNull();
+        }
+
+        public void put(String key, byte data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, short data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, int data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, long data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, float data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, double data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, boolean data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, String data) throws IOException {
+            writeName(key);
+            write(data);
+        }
+
+        public void put(String key, ByteBuf data) throws IOException {
+            writeName(key);
+            write(data);
+
+        }
 
         @Override
         protected void preWrite(BCFType type) throws IOException {
@@ -178,7 +243,8 @@ public class BCFWriter {
         int len = data.readableBytes();
         out.writeInt(len);
         if (data.hasArray()) out.write(data.array(), data.readerIndex() + data.arrayOffset(), len);
-        else if (out instanceof OutputStream) data.getBytes(data.readerIndex(), (OutputStream) out, len);
+        else if (out instanceof OutputStream)
+            data.getBytes(data.readerIndex(), (OutputStream) out, len);
         else {
             byte[] bytes = new byte[len];
             data.getBytes(data.readerIndex(), bytes);
